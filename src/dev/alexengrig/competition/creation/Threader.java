@@ -1,4 +1,4 @@
-package dev.alexengrig.competition;
+package dev.alexengrig.competition.creation;
 
 public class Threader extends Thread {
     private static int COUNTER = 0;

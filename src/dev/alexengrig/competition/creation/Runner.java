@@ -1,4 +1,4 @@
-package dev.alexengrig.competition;
+package dev.alexengrig.competition.creation;
 
 public class Runner implements Runnable {
     private static int COUNTER = 0;
