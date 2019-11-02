@@ -9,9 +9,9 @@ public class Client extends Person {
     public void run() {
         say("Where is my beer?");
         while (running) {
-            say("I'm waiting.");
+            say("I'm waiting my beer.");
             try {
-                Thread.sleep(2000);
+                Thread.sleep(4000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -3,6 +3,7 @@ package dev.alexengrig.competition.barman;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 public class Bar extends Thread {
     private boolean working = false;
@@ -24,21 +25,13 @@ public class Bar extends Thread {
         working = true;
         Barman[] barmen = getBarmen();
         Queue<Client> clients = getClients();
-        while (working) {
-            if (!clients.isEmpty()) {
-                for (Barman barman : barmen) {
-                    if (barman.isFree()) {
-                        barman.serve(clients.remove());
-                        if (clients.isEmpty()) {
-                            break;
-                        }
+        while (working || !clients.isEmpty()) {
+            for (Barman barman : barmen) {
+                if (barman.isFree()) {
+                    barman.serve(clients.remove());
+                    if (clients.isEmpty()) {
+                        break;
                     }
-                }
-            } else {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }
@@ -68,10 +61,10 @@ public class Bar extends Thread {
     }
 
     private Queue<Client> getClients() {
-        Client tom = new Client("Tom");
-        Client bill = new Client("Bill");
-        tom.start();
-        bill.start();
-        return new LinkedList<>(List.of(tom, bill));
+        return List.of("Tom", "Bill", "Jack", "Boris", "Bruce", "Clark", "Duke", "Elvis", "Homer")
+                .stream()
+                .map(Client::new)
+                .peek(Client::start)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 }
