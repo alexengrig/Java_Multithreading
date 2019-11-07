@@ -1,12 +1,14 @@
-package dev.alexengrig.competition.pool;
+package dev.alexengrig.competition.countdown;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-public class Pool {
+public class CountdownLatch {
     public static void main(String[] args) {
+        int count = 5;
+        final CountDownLatch countDownLatch = new CountDownLatch(count);
         Function<Integer, Runnable> runnableById = id -> () -> {
             System.out.println("Started: " + id);
             try {
@@ -14,16 +16,19 @@ public class Pool {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("countdown before: " + countDownLatch.getCount());
+            countDownLatch.countDown();
+            System.out.println("countdown after: " + countDownLatch.getCount());
             System.out.println("Completed: " + id);
         };
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < count; i++) {
             executorService.submit(runnableById.apply(i));
         }
         System.out.println("Run all");
         executorService.shutdown();
         try {
-            executorService.awaitTermination(1, TimeUnit.DAYS);
+            countDownLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
